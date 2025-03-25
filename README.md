@@ -54,15 +54,20 @@ This is a local bridge service that enables n8n to communicate with the Browser 
 
 ## API Endpoints
 
-| Method | Endpoint                      | Description                  |
-|--------|-------------------------------|------------------------------|
-| POST   | /api/v1/run-task              | Start a new browser task     |
-| GET    | /api/v1/task/{task_id}        | Get task details             |
-| GET    | /api/v1/task/{task_id}/status | Get task status              |
-| PUT    | /api/v1/stop-task/{task_id}   | Stop a running task          |
-| PUT    | /api/v1/pause-task/{task_id}  | Pause a running task         |
-| PUT    | /api/v1/resume-task/{task_id} | Resume a paused task         |
-| GET    | /api/v1/list-tasks            | List all tasks               |
+| Method | Endpoint                           | Description                  |
+|--------|------------------------------------|------------------------------|
+| POST   | /api/v1/run-task                   | Start a new browser task     |
+| GET    | /api/v1/task/{task_id}             | Get task details             |
+| GET    | /api/v1/task/{task_id}/status      | Get task status              |
+| PUT    | /api/v1/stop-task/{task_id}        | Stop a running task          |
+| PUT    | /api/v1/pause-task/{task_id}       | Pause a running task         |
+| PUT    | /api/v1/resume-task/{task_id}      | Resume a paused task         |
+| GET    | /api/v1/list-tasks                 | List all tasks               |
+| GET    | /live/{task_id}                    | Live view UI                 |
+| GET    | /api/v1/ping                       | Check health                 |
+| GET    | /api/v1/task/{task_id}/media       | Get task media               |
+| GET    | /api/v1/task/{task_id}/media/list  | List all media from task     |
+| GET    | /api/v1/media/{task_id}/{filename} | Display task media content   |
 
 ## Usage Examples
 
