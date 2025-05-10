@@ -23,6 +23,7 @@ from fastapi.encoders import jsonable_encoder
 from langchain_anthropic import ChatAnthropic
 from langchain_mistralai import ChatMistralAI
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_ollama import ChatOllama
 from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from pydantic import BaseModel, Field
@@ -150,6 +151,10 @@ def get_llm(ai_provider: str):
     elif ai_provider == "mistral":
         return ChatMistralAI(
             model=os.environ.get("MISTRAL_MODEL_ID", "mistral-large-latest")
+        )
+    elif ai_provider == "groq":
+        return ChatGroq(
+            model=os.environ.get("GROQ_MODEL_ID", "meta-llama/llama-4-scout-17b-16e-instruct")
         )
     elif ai_provider == "google":
         return ChatGoogleGenerativeAI(
