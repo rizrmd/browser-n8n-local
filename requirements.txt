@@ -10,3 +10,4 @@ langchain-google-genai>=0.0.3
 langchain-ollama>=0.0.1
 langchain-groq>=0.3.2
 asyncio>=3.4.3 
+playwright>=13.0.0
