@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y \
     libatk-bridge2.0-0 \
     libcups2 \
     libdrm2 \
+    libpango-1.0-0\
+    libcairo2 \
     libxkbcommon0 \
     libxcomposite1 \
     libxdamage1 \
