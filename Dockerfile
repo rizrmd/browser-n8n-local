@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     ca-certificates \
+    curl \
     procps \
     unzip \
     # Additional dependencies that Playwright might need
