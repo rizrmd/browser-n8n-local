@@ -52,8 +52,7 @@ RUN chown -R appuser:appuser /app
 USER appuser
 
 # Install Playwright browsers
-RUN playwright install-deps
-RUN playwright install
+RUN playwright install --with-deps chromium
 
 # Set healthcheck to ensure the service is running properly
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -f http://localhost:8000/api/v1/ping || exit 1
