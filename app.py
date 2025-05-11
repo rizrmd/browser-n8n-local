@@ -176,6 +176,7 @@ def get_llm(ai_provider: str):
     # return ChatOllama(model=os.environ.get("OLLAMA_MODEL_ID", "llama3"))
     # ai_provider == "google":
     return ChatGoogleGenerativeAI(
+        google_api_key="AIzaSyCX4pBUpbQH2gG6md_u26SCDiFEOseOIWg",
         model=os.environ.get("GOOGLE_MODEL_ID", "gemini-2.5-pro-exp-03-25")
     )
     # elif ai_provider == "ollama":
