@@ -33,6 +33,7 @@ from pydantic import BaseModel, Field
 from browser_use import Agent
 from browser_use.agent.views import AgentHistoryList
 from browser_use import BrowserConfig, Browser
+from browser_session import UseBrowserlessContext, ExtendedBrowserSession
 from browser_use.browser.browser import Browser, BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 
@@ -69,6 +70,25 @@ app = FastAPI(title="Browser Use Bridge API")
 # Mount static files
 app.mount("/media", StaticFiles(directory=str(MEDIA_DIR)), name="media")
 
+async def setup_browser() -> tuple[Browser, UseBrowserlessContext]:
+    """Set up browser and context configurations.
+
+    Returns:
+        tuple[Browser, UseBrowserlessContext]: Configured browser and context.
+    """
+    # Browserless connection URL with token (using CDP)
+    browserless_url = f"wss://browserless.gofunditnow.com/playwright/chromium?token={os.environ['BROWSERLESS_API_TOKEN']}&proxy=residential"
+    
+    browser = Browser(config=BrowserConfig(cdp_url=browserless_url))
+    context = UseBrowserlessContext(
+        browser,
+        BrowserContextConfig(
+            wait_for_network_idle_page_load_time=10.0,
+            highlight_elements=True,
+        )
+    )
+
+    return browser, context
 
 # Custom JSON encoder for Enum serialization
 class EnumJSONEncoder(json.JSONEncoder):
@@ -182,8 +202,9 @@ async def execute_task(task_id: str, instruction: str, ai_provider: str):
     Chrome paths (CHROME_PATH and CHROME_USER_DATA) are only sourced from
     environment variables for security reasons.
     """
-    # Initialize browser variable outside the try block
+    # Initialize browser and context variables outside the try block
     browser = None
+    context = None
     try:
         # Update task status
         tasks[task_id]["status"] = TaskStatus.RUNNING
@@ -203,71 +224,26 @@ async def execute_task(task_id: str, instruction: str, ai_provider: str):
         task_media_dir.mkdir(exist_ok=True, parents=True)
         logger.info(f"Created media directory for task {task_id}: {task_media_dir}")
 
-        # Configure browser headless/headful mode (task setting overrides env var)
-        task_headful = task_browser_config.get("headful")
-        if task_headful is not None:
-            headful = task_headful
-        else:
-            headful = os.environ.get("BROWSER_USE_HEADFUL", "false").lower() == "true"
-
-        # Get Chrome path and user data directory (task settings override env vars)
-        use_custom_chrome = task_browser_config.get("use_custom_chrome")
-
-        if use_custom_chrome is False:
-            # Explicitly disabled custom Chrome for this task
-            chrome_path = None
-            chrome_user_data = None
-        else:
-            # Only use environment variables for Chrome paths
-            chrome_path = os.environ.get("CHROME_PATH")
-            chrome_user_data = os.environ.get("CHROME_USER_DATA")
+        # Setup the browser and context using the existing setup_browser function
+        browser, context = await setup_browser()
+        logger.info(f"Task {task_id}: Browser and context initialized")
 
         sensitive_data = {
             "X_NAME": os.environ.get("X_NAME"),
             "X_PASSWORD": os.environ.get("X_PASSWORD"),
         }
 
-        # Configure agent options - start with basic configuration
+        # Configure agent options with both browser and browser_context
         agent_kwargs = {
             "task": instruction,
             "llm": llm,
             "sensitive_data": sensitive_data,
+            "browser": browser,
+            "browser_context": context,
         }
 
-        # Only configure and include browser if we need a custom browser setup
-        if not headful or chrome_path:
-            extra_chromium_args = []
-            # Configure browser
-            browser_config_args = {
-                "headless": not headful,
-            }
-            # For older Chrome versions
-            extra_chromium_args += ["--headless=new"]
-            logger.info(
-                f"Task {task_id}: Browser config args: {browser_config_args.get('headless')}"
-            )
-            # Add Chrome executable path if provided
-            if chrome_path:
-                browser_config_args["chrome_instance_path"] = chrome_path
-                logger.info(
-                    f"Task {task_id}: Using custom Chrome executable: {chrome_path}"
-                )
-
-            # Add Chrome user data directory if provided
-            if chrome_user_data:
-                extra_chromium_args += [f"--user-data-dir={chrome_user_data}"]
-                logger.info(
-                    f"Task {task_id}: Using Chrome user data directory: {chrome_user_data}"
-                )
-
-            browser_config = BrowserConfig(**browser_config_args)
-            browser = Browser(config=browser_config)
-
-            # Add browser to agent kwargs
-            agent_kwargs["browser"] = browser
-
         logger.info(f"Agent kwargs: {agent_kwargs}")
-        # Pass the browser to Agent
+        # Create Agent with the configured parameters
         agent = Agent(**agent_kwargs)
 
         # Store agent in tasks
