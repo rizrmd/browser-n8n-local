@@ -153,9 +153,7 @@ def get_llm(ai_provider: str):
     #         model=os.environ.get("MISTRAL_MODEL_ID", "mistral-large-latest")
     #     )
     # elif ai_provider == "groq":
-    return ChatGroq(
-            model=os.environ.get("GROQ_MODEL_ID", "meta-llama/llama-4-scout-17b-16e-instruct")
-        )
+    # return ChatOllama(model=os.environ.get("OLLAMA_MODEL_ID", "llama3"))
     # elif ai_provider == "google":
     #     return ChatGoogleGenerativeAI(
     #         model=os.environ.get("GOOGLE_MODEL_ID", "gemini-1.5-pro")
@@ -170,10 +168,11 @@ def get_llm(ai_provider: str):
     #     )
     # else:  # default to OpenAI
     #     base_url = os.environ.get("OPENAI_BASE_URL")
-    #     kwargs = {"model": os.environ.get("OPENAI_MODEL_ID", "gpt-4o")}
-    #     if base_url:
-    #         kwargs["base_url"] = base_url
-    #     return ChatOpenAI(**kwargs)
+    kwargs = {
+        "model": "llama3.3",
+        "base_url": "https://llm.external.cynest.dev/ollama"
+        }
+    return ChatOpenAI(**kwargs)
 
 
 async def execute_task(task_id: str, instruction: str, ai_provider: str):
