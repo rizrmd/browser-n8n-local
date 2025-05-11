@@ -154,10 +154,11 @@ def get_llm(ai_provider: str):
     #     )
     # elif ai_provider == "groq":
     # return ChatOllama(model=os.environ.get("OLLAMA_MODEL_ID", "llama3"))
-    # elif ai_provider == "google":
-    #     return ChatGoogleGenerativeAI(
-    #         model=os.environ.get("GOOGLE_MODEL_ID", "gemini-1.5-pro")
-    #     )
+    # ai_provider == "google":
+    return ChatGoogleGenerativeAI(
+        google_api_key="AIzaSyCX4pBUpbQH2gG6md_u26SCDiFEOseOIWg",
+        model=os.environ.get("GOOGLE_MODEL_ID", "gemini-2.5-pro-exp-03-25")
+    )
     # elif ai_provider == "ollama":
     #     return ChatOllama(model=os.environ.get("OLLAMA_MODEL_ID", "llama3"))
     # elif ai_provider == "azure":
@@ -168,11 +169,11 @@ def get_llm(ai_provider: str):
     #     )
     # else:  # default to OpenAI
     #     base_url = os.environ.get("OPENAI_BASE_URL")
-    kwargs = {
-        "model": "llama3.3",
-        "base_url": "https://llm.external.cynest.dev/ollama"
-        }
-    return ChatOpenAI(**kwargs)
+    # kwargs = {
+    #     "model": "llama3.3",
+    #     "base_url": "https://llm.external.cynest.dev/ollama"
+    #     }
+    # return ChatOpenAI(**kwargs)
 
 
 async def execute_task(task_id: str, instruction: str, ai_provider: str):
