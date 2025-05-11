@@ -144,36 +144,36 @@ class TaskStatusResponse(BaseModel):
 # Utility functions
 def get_llm(ai_provider: str):
     """Get LLM based on provider"""
-    if ai_provider == "anthropic":
-        return ChatAnthropic(
-            model=os.environ.get("ANTHROPIC_MODEL_ID", "claude-3-opus-20240229")
-        )
-    elif ai_provider == "mistral":
-        return ChatMistralAI(
-            model=os.environ.get("MISTRAL_MODEL_ID", "mistral-large-latest")
-        )
-    elif ai_provider == "groq":
-        return ChatGroq(
+    # if ai_provider == "anthropic":
+    #     return ChatAnthropic(
+    #         model=os.environ.get("ANTHROPIC_MODEL_ID", "claude-3-opus-20240229")
+    #     )
+    # elif ai_provider == "mistral":
+    #     return ChatMistralAI(
+    #         model=os.environ.get("MISTRAL_MODEL_ID", "mistral-large-latest")
+    #     )
+    # elif ai_provider == "groq":
+    return ChatGroq(
             model=os.environ.get("GROQ_MODEL_ID", "meta-llama/llama-4-scout-17b-16e-instruct")
         )
-    elif ai_provider == "google":
-        return ChatGoogleGenerativeAI(
-            model=os.environ.get("GOOGLE_MODEL_ID", "gemini-1.5-pro")
-        )
-    elif ai_provider == "ollama":
-        return ChatOllama(model=os.environ.get("OLLAMA_MODEL_ID", "llama3"))
-    elif ai_provider == "azure":
-        return AzureChatOpenAI(
-            azure_deployment=os.environ.get("AZURE_DEPLOYMENT_NAME"),
-            openai_api_version=os.environ.get("AZURE_API_VERSION", "2023-05-15"),
-            azure_endpoint=os.environ.get("AZURE_ENDPOINT"),
-        )
-    else:  # default to OpenAI
-        base_url = os.environ.get("OPENAI_BASE_URL")
-        kwargs = {"model": os.environ.get("OPENAI_MODEL_ID", "gpt-4o")}
-        if base_url:
-            kwargs["base_url"] = base_url
-        return ChatOpenAI(**kwargs)
+    # elif ai_provider == "google":
+    #     return ChatGoogleGenerativeAI(
+    #         model=os.environ.get("GOOGLE_MODEL_ID", "gemini-1.5-pro")
+    #     )
+    # elif ai_provider == "ollama":
+    #     return ChatOllama(model=os.environ.get("OLLAMA_MODEL_ID", "llama3"))
+    # elif ai_provider == "azure":
+    #     return AzureChatOpenAI(
+    #         azure_deployment=os.environ.get("AZURE_DEPLOYMENT_NAME"),
+    #         openai_api_version=os.environ.get("AZURE_API_VERSION", "2023-05-15"),
+    #         azure_endpoint=os.environ.get("AZURE_ENDPOINT"),
+    #     )
+    # else:  # default to OpenAI
+    #     base_url = os.environ.get("OPENAI_BASE_URL")
+    #     kwargs = {"model": os.environ.get("OPENAI_MODEL_ID", "gpt-4o")}
+    #     if base_url:
+    #         kwargs["base_url"] = base_url
+    #     return ChatOpenAI(**kwargs)
 
 
 async def execute_task(task_id: str, instruction: str, ai_provider: str):
