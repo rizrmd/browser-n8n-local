@@ -52,6 +52,7 @@ RUN chown -R appuser:appuser /app
 USER appuser
 
 # Install Playwright browsers
+RUN playwright install-deps
 RUN playwright install
 
 # Set healthcheck to ensure the service is running properly
