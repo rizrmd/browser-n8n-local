@@ -176,7 +176,6 @@ def get_llm(ai_provider: str):
     # return ChatOllama(model=os.environ.get("OLLAMA_MODEL_ID", "llama3"))
     # ai_provider == "google":
     return ChatGoogleGenerativeAI(
-        google_api_key="AIzaSyCX4pBUpbQH2gG6md_u26SCDiFEOseOIWg",
         model=os.environ.get("GOOGLE_MODEL_ID", "gemini-2.5-pro-exp-03-25")
     )
     # elif ai_provider == "ollama":
@@ -229,8 +228,8 @@ async def execute_task(task_id: str, instruction: str, ai_provider: str):
         logger.info(f"Task {task_id}: Browser and context initialized")
 
         sensitive_data = {
-            "X_NAME": os.environ.get("X_NAME"),
-            "X_PASSWORD": os.environ.get("X_PASSWORD"),
+            "X_NAME": os.environ.get("X_NAME", ""),
+            "X_PASSWORD": os.environ.get("X_PASSWORD", ""),
         }
 
         # Configure agent options with both browser and browser_context
