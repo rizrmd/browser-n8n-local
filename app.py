@@ -77,7 +77,7 @@ async def setup_browser() -> tuple[Browser, UseBrowserlessContext]:
         tuple[Browser, UseBrowserlessContext]: Configured browser and context.
     """
     # Browserless connection URL with token (using CDP)
-    browserless_url = f"wss_url://browserless.gofunditnow.com/playwright/chromium?token={os.environ['BROWSERLESS_API_TOKEN']}"
+    browserless_url = f"wss://browserless.gofunditnow.com/playwright/chromium?token={os.environ['BROWSERLESS_API_TOKEN']}"
     
     browser = Browser(config=BrowserConfig(wss_url=browserless_url))
     context = UseBrowserlessContext(
